@@ -1,0 +1,51 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+TreeNode* buildTreeHelper(vector<int>& preorder, int& index, int minValue, int maxValue) {
+    if (index >= preorder.size())
+        return NULL;
+
+    int currentValue = preorder[index];
+    if (currentValue < minValue || currentValue > maxValue)
+        return NULL;
+
+    TreeNode* root = new TreeNode(currentValue);
+    index++;
+
+    root->left = buildTreeHelper(preorder, index, minValue, currentValue);
+    root->right = buildTreeHelper(preorder, index, currentValue, maxValue);
+
+    return root;
+}
+
+TreeNode* buildTree(vector<int>& preorder) {
+    int index = 0;
+    return buildTreeHelper(preorder, index, INT_MIN, INT_MAX);
+}
+
+void postorderTraversal(TreeNode* root) {
+    if (root == NULL)
+        return;
+
+    postorderTraversal(root->left);
+    postorderTraversal(root->right);
+    cout << root->val << " ";
+}
+
+int main() {
+    vector<int> preorder = { 1, 2, 4, 5, 3, 6, 7 };
+    TreeNode* root = buildTree(preorder);
+
+    cout << "Postorder traversal: ";
+    postorderTraversal(root);
+
+    return 0;
+}
